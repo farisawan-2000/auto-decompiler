@@ -3,19 +3,6 @@ from enum import Enum
 
 expected_args = 1
 
-# clean_crashes = False
-# if '--clean-crashes' in sys.argv:
-# 	clean_crashes = True
-# 	expected_args+=1
-
-# count_funcs = False
-# if '--count-funcs' in sys.argv:
-# 	count_funcs = True
-# 	expected_args+=1
-
-# if len(sys.argv) == expected_args:
-# 	print("Usage: python3 autoUpdater.py <OPTIONAL ARGS> (path to C file)")
-# 	exit(1)
 
 srcRepoPath = sys.argv[1].split("src")[0]
 
@@ -43,7 +30,6 @@ mips_to_c_version = mips_to_c_version[0].decode("ascii").split()[1]
 # file bounds constants
 START = 0
 END = 1
-
 
 funcBounds = {}
 global_asm_lookup = {} # just in case
@@ -91,6 +77,7 @@ toDel = []
 # Pass 2: filter out functions that are up to date
 for sym in funcBounds:
 	temp = funcBounds[sym]
+	# TODO: have a way to force this (if one wants to update a specific function automatically)
 	if "mips_to_c commit" in fileBuffer[temp[START]+1]:
 		commit = fileBuffer[temp[START]+1].split()[-1]
 		if commit == mips_to_c_version:
@@ -103,8 +90,9 @@ print(funcBounds)
 print(global_asm_lookup)
 
 # Pass 3: Write the new file and place a new function
+# TODO: write to the original file
 startLine = 0
-outFile = open("tmp.c",'w+')
+outFile = open(sys.argv[1],'w+')
 for sym in funcBounds:
 	tmp = funcBounds[sym]
 	outFile.write(''.join(fileBuffer[startLine:tmp[START]]))
