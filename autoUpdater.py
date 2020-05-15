@@ -1,10 +1,12 @@
 import sys, os, subprocess
 from enum import Enum
+CODE_FILE = -1
+Debug = False # change to True for debug prints
 
-expected_args = 1
-
-
-srcRepoPath = sys.argv[1].split("src")[0]
+if '--m2c-path' in sys.argv:
+	m2c_path = sys.argv[sys.argv.index('--m2c-path')+1]
+	print(m2c_path)
+srcRepoPath = sys.argv[CODE_FILE].split("src")[0]
 
 def getFileName(_file):
 	return _file.split('/')[-1].split('.')[0]
@@ -37,10 +39,10 @@ global_asm_lookup = {} # just in case
 # Pass 1: populate data structures
 
 fileName = os.getcwd()+"/tmp/"+getFileName(sys.argv[-1])+".c"
-inFile = open(sys.argv[-1], "r")
+inFile = open(sys.argv[CODE_FILE], "r")
 fileBuffer = inFile.readlines()
 inFile.close()
-inFile = open(sys.argv[-1], "r")
+inFile = open(sys.argv[CODE_FILE], "r")
 
 ifdef_line = 1
 global_asm_file = 1
@@ -69,15 +71,17 @@ for line in inFile:
 		global_asm_lookup[funcName] = global_asm_file
 	lineNum+=1
 
-print(funcBounds)
-print(global_asm_lookup)
+if Debug:
+	print(funcBounds)
+	print(global_asm_lookup)
 
 
 toDel = []
 # Pass 2: filter out functions that are up to date
 for sym in funcBounds:
 	temp = funcBounds[sym]
-	# TODO: have a way to force this (if one wants to update a specific function automatically)
+	# TODO: have a way to force this
+	# (if one wants to update a specific function automatically, or to reset a func)
 	if "mips_to_c commit" in fileBuffer[temp[START]+1]:
 		commit = fileBuffer[temp[START]+1].split()[-1]
 		if commit == mips_to_c_version:
@@ -86,13 +90,13 @@ for sym in funcBounds:
 for i in toDel:
 	del funcBounds[i]
 
-print(funcBounds)
-print(global_asm_lookup)
+if Debug:
+	print(funcBounds)
+	print(global_asm_lookup)
 
-# Pass 3: Write the new file and place a new function
-# TODO: write to the original file
+# Pass 3: Write the new file and place new functions
 startLine = 0
-outFile = open(sys.argv[1],'w+')
+outFile = open(sys.argv[CODE_FILE],'w+')
 for sym in funcBounds:
 	tmp = funcBounds[sym]
 	outFile.write(''.join(fileBuffer[startLine:tmp[START]]))
