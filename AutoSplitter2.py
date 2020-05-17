@@ -57,8 +57,10 @@ global_asm_reference = {}
 
 # Pass 2: Write to files
 for sym in funcReference:
-	global_asm_reference[sym] = non_matchings+"/"+getFileName(iFile)+"/"+sym+".s"
-	oFile = open(global_asm_reference[sym],"w+")
+	tmpVar = non_matchings+"/"+getFileName(iFile)+"/"+sym+".s"
+	tmpVar2 = "asm" + tmpVar.split("asm")[1]
+	global_asm_reference[sym] = [tmpVar2,tmpVar]
+	oFile = open(tmpVar,"w+")
 	oFile.write(''.join(fileBuffer[funcReference[sym][0]:funcReference[sym][1]]))
 	oFile.close()
 
@@ -73,9 +75,9 @@ cFile.write("#include <ultra64.h>\n")
 cFile.write("#include <macros.h.h>\n")
 for sym in funcReference:
 	cFile.write("\n#ifdef MIPS_TO_C\n")
-	cFile.write(getNewFunc(global_asm_reference[sym]))
+	cFile.write(getNewFunc(global_asm_reference[sym][1]))
 	cFile.write("#else\n")
-	cFile.write("GLOBAL_ASM(\""+global_asm_reference[sym]+"\")\n")
+	cFile.write("GLOBAL_ASM(\""+global_asm_reference[sym][0]+"\")\n")
 	cFile.write("#endif\n")
 
 cFile.close()
