@@ -71,10 +71,6 @@ for line in inFile:
 		global_asm_lookup[funcName] = global_asm_file
 	lineNum+=1
 
-if Debug:
-	print(funcBounds)
-	print(global_asm_lookup)
-
 
 toDel = []
 # Pass 2: filter out functions that are up to date
