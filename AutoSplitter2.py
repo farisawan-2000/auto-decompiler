@@ -5,6 +5,7 @@ import pathlib
 
 if len(sys.argv) != 3:
 	print("Usage: python3 AutoSplitter2.py (ASM File) (Location of non-matchings folder)")
+	exit()
 
 def getFileName(_file):
 	return _file.split('/')[-1].split('.')[0]
@@ -18,8 +19,9 @@ def getNewFunc(_fileName):
 
 iFile = sys.argv[1]
 non_matchings = sys.argv[2]
-print(non_matchings+"/"+getFileName(iFile)+"/")
+# print(non_matchings+"/"+getFileName(iFile)+"/")
 pathlib.Path(non_matchings+"/"+getFileName(iFile)+"/").mkdir(parents=True, exist_ok=True)
+
 
 process = subprocess.Popen('git ls-files -s mips_to_c/', shell=True,
                            stdout=subprocess.PIPE)
