@@ -1,7 +1,7 @@
 import sys, os, subprocess
 from enum import Enum
 CODE_FILE = -1
-Debug = False # change to True for debug prints
+Debug = True # change to True for debug prints
 
 if '--m2c-path' in sys.argv:
 	m2c_path = sys.argv[sys.argv.index('--m2c-path')+1]
@@ -28,6 +28,9 @@ process = subprocess.Popen('git ls-files -s mips_to_c/', shell=True,
                            stdout=subprocess.PIPE)
 mips_to_c_version = process.communicate()
 mips_to_c_version = mips_to_c_version[0].decode("ascii").split()[1]
+
+if Debug:
+	print(mips_to_c_version)
 
 # file bounds constants
 START = 0
@@ -62,6 +65,7 @@ for line in inFile:
 		inFunc = 1
 		ifdef_line = lineNum
 	if "func_" in line and (lineNum - ifdef_line == 2):
+		print(line)
 		funcName = getFuncName(line)
 	if "GLOBAL_ASM" in line:
 		global_asm_file = getGlobalAsmFile(line)
@@ -70,6 +74,10 @@ for line in inFile:
 		funcBounds[funcName] = [ifdef_line, lineNum]
 		global_asm_lookup[funcName] = global_asm_file
 	lineNum+=1
+
+if Debug:
+	print(funcBounds)
+	print(global_asm_lookup)
 
 
 toDel = []

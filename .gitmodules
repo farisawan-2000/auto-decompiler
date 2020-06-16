@@ -1,3 +1,6 @@
 [submodule "mips_to_c"]
 	path = mips_to_c
 	url = https://github.com/matt-kempster/mips_to_c
+[submodule "decomp-permuter"]
+	path = decomp-permuter
+	url = https://github.com/simonlindholm/decomp-permuter
