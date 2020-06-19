@@ -33,5 +33,5 @@ for i in s_files_copy:
 
 currFile = 1
 for i in s_files:
-    os.system("python3 AutoSplitter2.py " + i + " " + NON_MATCHING_DIR)
+    os.system("python3 auto_splitter.py " + i + " " + NON_MATCHING_DIR)
     currFile += 1
