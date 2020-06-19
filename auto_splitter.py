@@ -1,6 +1,7 @@
 import sys, os, subprocess, re
 import argparse
 import pathlib
+from lib.getNewFunc import getNewFunc
 
 
 if len(sys.argv) != 3:
@@ -12,28 +13,6 @@ if len(sys.argv) != 3:
 
 def getFileName(_file):
     return _file.split("/")[-1].split(".")[0]
-
-
-def getNewFunc(_fileName):
-    proc = subprocess.Popen(
-        "./mips_to_c/mips_to_c.py " + _fileName + " " + getFileName(_fileName),
-        shell=True,
-        stdout=subprocess.PIPE,
-    )
-    toReturn = proc.communicate()
-    test = toReturn[0].decode("ascii")
-    if "Complex control flow" in test:
-        proc = subprocess.Popen(
-            "./mips_to_c/mips_to_c.py --no-andor "
-            + _fileName
-            + " "
-            + getFileName(_fileName),
-            shell=True,
-            stdout=subprocess.PIPE,
-        )
-        toReturn = proc.communicate()
-    return toReturn[0].decode("ascii")
-
 
 iFile = sys.argv[1]
 non_matchings = sys.argv[2]
