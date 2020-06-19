@@ -1,10 +1,12 @@
+# Sample Decompiler script for MK64
+
 import sys, os, glob, re
 
 # change these parameters as you please! :)
-REPO_DIRECTORY = "../mk64-2"
-NON_MATCHING_DIR = "../mk64-2/asm/non_matchings"
-ASM_DIR = "../mk64-2/asm/"
-SRC_DIR = "../mk64-2/src/"
+REPO_DIRECTORY = "../mk64_priv"
+NON_MATCHING_DIR = "../mk64_priv/asm/non_matchings"
+ASM_DIR = "../mk64_priv/asm/"
+SRC_DIR = "../mk64_priv/src/"
 
 
 s_files = [i for i in glob.glob(ASM_DIR+"**/*.s", recursive=True) if "non_matchings" not in i and "entry" not in i and "rom_header" not in i and "boot" not in i]
