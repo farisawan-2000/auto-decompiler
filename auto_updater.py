@@ -1,6 +1,6 @@
 import sys, os, subprocess
 from enum import Enum
-from lib import getNewFunc
+from lib.getNewFunc import getNewFunc
 
 CODE_FILE = -1
 Debug = True  # change to True for debug prints

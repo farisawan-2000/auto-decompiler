@@ -4,7 +4,9 @@ def __getFileName(_file):
 
 def getNewFunc(_fileName):
     proc = subprocess.Popen(
-        "./mips_to_c/mips_to_c.py " + _fileName + " " + __getFileName(_fileName),
+        "./mips_to_c/mips_to_c.py --no-casts " + _fileName + " " + __getFileName(_fileName)
+        +" --context ~/Downloads/context.c"
+        ,
         shell=True,
         stdout=subprocess.PIPE,
     )
