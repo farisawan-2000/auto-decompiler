@@ -1,8 +1,8 @@
 import sys, os, subprocess, re
 from lib.getNewFunc import getNewFunc
 
-K64_DIR = "../kirby64/"
-CONTEXT_FILE = "~/Downloads/context.c"
+K64_DIR = "../notkirby/"
+CONTEXT_FILE = "~/notkirby/ctx.c"
 
 M2C_LINE_PATTERN = r"#ifdef\s+MIPS_TO_C"
 NM_LINE_PATTERN = r"#ifdef\s+NON_MATCHING"
@@ -69,16 +69,19 @@ for line in fl:
 				gotNewFunc = 1
 	if gotNewFunc == 1:
 		nf2 = getNewFunc(K64_DIR+nf)
-		print("#ifdef MIPS_TO_C")
-		print(nf2[:-1])
-		print("#else")
-		print("GLOBAL_ASM(\""+nf+"\")")
-		print("#endif")
+		nF += "#ifdef MIPS_TO_C\n"
+		nF += nf2
+		nF += "#else\n"
+		nF += "GLOBAL_ASM(\""+nf+"\")\n"
+		nF += "#endif\n"
 		gotNewFunc = 0
 	if isNewFunc == 0 and endifLine == 0:
-		print(line[:-1])
+		nF += line
 	elif isOldFunc == 1:
-		print(line[:-1])
+		nF += line
 	# print(isNewFunc, isOldFunc, "#bruh")
 	lineNum += 1;
 
+f = open(sys.argv[1], "w+")
+f.write(nF)
+f.close()
