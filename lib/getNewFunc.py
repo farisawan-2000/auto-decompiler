@@ -1,16 +1,25 @@
-import subprocess
+import subprocess, os
 def __getFileName(_file):
     return _file.split("/")[-1].split(".")[0]
 
-CONTEXT = "~/NK4E/ctx.c"
+CONTEXT = "~/Decomps/kirby64/ctx.c"
 # CONTEXT = "~/Documents/dinosaur-planet/ctx.c"
 # CONTEXT = "~/Documents/mk64/ctx.c"
 
-def getNewFunc(_fileName):
+RODATA = "~/Decomps/kirby64/data/ovl12/kirby.u.1F2DE0.s"
+
+
+def getNewFunc(myFileName):
+
+
+    _fileName = "/tmp/m2c.s"
+
+    os.system("cat %s %s > %s" % (myFileName, RODATA, _fileName))
+
+
     proc = subprocess.Popen(
-        "./mips_to_c/mips_to_c.py --no-casts " + _fileName #+ " " + __getFileName(_fileName)
+        "./mips_to_c/m2c.py --no-casts " + _fileName #+ " " + __getFileName(_fileName)
         +" --context %s " % CONTEXT
-        +" --rodata ~/NK4E/data/ovl3/kirby.0F0D50.1.s "
         # +" --no-andor"
           # +" --reg-vars=saved"
         ,
@@ -21,9 +30,8 @@ def getNewFunc(_fileName):
     test = toReturn[0].decode("ascii")
     if "Complex control flow" in test:
         proc = subprocess.Popen(
-            "./mips_to_c/mips_to_c.py --no-andor --no-casts"
+            "./mips_to_c/m2c.py --no-andor --no-casts"
             +" --context %s " % CONTEXT
-            +" --rodata ~/NK4E/data/ovl3/kirby.0F0D50.1.s "
             + _fileName
             + " "
             + __getFileName(_fileName),
@@ -31,4 +39,11 @@ def getNewFunc(_fileName):
             stdout=subprocess.PIPE,
         )
         toReturn = proc.communicate()
-    return toReturn[0].decode("ascii")
+
+    me = toReturn[0].decode("ascii")
+
+    for line in me.split("\n"):
+        if "extern" in line:
+            print(line)
+
+    return "\n".join([d for d in me.split("\n") if "extern" not in d])
